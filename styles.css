@@ -2413,7 +2413,11 @@ h1, h2, h3, h4, h5, h6 {
 .form-submit {
   width: 100%;
   margin-top: var(--sp-sm);
+  transition: background 0.3s, opacity 0.3s;
 }
+.form-submit:disabled { opacity: 0.7; cursor: wait; }
+.form-submit.btn-success { background: #2e7d32; }
+.form-submit.btn-error { background: #c62828; }
 
 .form-note {
   display: flex;

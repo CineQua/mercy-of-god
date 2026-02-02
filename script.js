@@ -287,4 +287,51 @@
 
   window.addEventListener('scroll', throttle(updateActiveNavOnScroll, 150), { passive: true });
 
+  /* ------------------------------------------------
+     Contact Form (Formspree AJAX submission)
+     ------------------------------------------------ */
+  const contactForm = document.querySelector('.contact-form');
+  if (contactForm) {
+    contactForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      // Check honeypot
+      if (contactForm.querySelector('[name="website"]').value) return;
+
+      const btn = contactForm.querySelector('.form-submit');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = 'Sending\u2026';
+
+      fetch(contactForm.action, {
+        method: 'POST',
+        body: new FormData(contactForm),
+        headers: { 'Accept': 'application/json' }
+      })
+        .then(function (res) {
+          if (res.ok) {
+            contactForm.reset();
+            btn.innerHTML = 'Message Sent \u2713';
+            btn.classList.add('btn-success');
+            setTimeout(function () {
+              btn.disabled = false;
+              btn.innerHTML = originalText;
+              btn.classList.remove('btn-success');
+            }, 4000);
+          } else {
+            throw new Error('Form submission failed');
+          }
+        })
+        .catch(function () {
+          btn.innerHTML = 'Error \u2014 Please try again';
+          btn.classList.add('btn-error');
+          setTimeout(function () {
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+            btn.classList.remove('btn-error');
+          }, 4000);
+        });
+    });
+  }
+
 })();
